@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gratis MKB Merkcheck | JD Creative Design Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--brown:#362923;--taupe:#826558;--beige:#f8f5f2;--line:#d9d0cb;--muted:#8e817b;--dark:#171615}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--beige);color:var(--brown)}
+body,input,button{font-family:'Montserrat',Arial,sans-serif;font-weight:400}
+.app{min-height:100vh;position:relative;overflow:hidden}
+.progress{position:fixed;top:0;left:0;width:100%;height:3px;background:rgba(130,101,88,.12);z-index:10}
+.progress span{display:block;height:100%;width:0;background:var(--taupe);transition:width .45s ease}
+.screen{display:none;min-height:100vh;padding:86px 28px 60px;align-items:center;justify-content:center;animation:in .45s ease both}
+.screen.active{display:flex}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.inner{width:min(760px,100%)}
+.start{background:var(--dark);color:#fff;text-align:center}
+.start .inner{width:min(790px,100%)}
+.eyebrow{font-family:'Playfair Display',Georgia,serif;font-size:13px;letter-spacing:2.4px;text-transform:uppercase;color:#a98979;margin:0 0 28px}
+h1,h2{font-family:'Playfair Display',Georgia,serif;font-weight:400;letter-spacing:.5px;margin:0}
+h1{font-size:clamp(42px,6vw,68px);line-height:1.08}
+h1 em{font-weight:400;color:#a98979}
+.lead{max-width:660px;margin:28px auto 32px;font-size:14px;line-height:2;letter-spacing:.5px;color:#b9b1ad}
+.startbtn,.next,.submit,.cta{appearance:none;border:1px solid var(--taupe);background:transparent;color:inherit;padding:15px 28px;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:.25s;text-decoration:none;display:inline-block}
+.startbtn:hover{border-color:#a98270;box-shadow:0 0 8px rgba(130,101,88,.35),0 0 18px rgba(130,101,88,.18)}
+.time{font-size:10px;letter-spacing:.7px;color:#77706c;margin-top:17px}
+.num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--brown);color:#fff;font-size:10px;margin-bottom:25px}
+.category{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--taupe);margin-bottom:15px}
+h2{font-size:clamp(28px,3.4vw,40px);line-height:1.28}
+.helper{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--taupe);font-size:17px;line-height:1.6;margin:17px 0 30px}
+.options{display:grid;gap:12px;margin-top:28px}
+.option{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.25);padding:17px 20px;text-align:left;color:var(--brown);cursor:pointer;font-size:13px;letter-spacing:.3px;transition:.2s}
+.option:hover,.option.selected{border-color:var(--taupe);background:#fff}
+.option.selected{box-shadow:inset 3px 0 0 var(--taupe)}
+.nav{display:flex;align-items:center;gap:14px;margin-top:30px}
+.next{background:var(--brown);border-color:var(--brown);color:#fff}
+.next:disabled{opacity:.3;cursor:not-allowed}
+.back{border:0;background:transparent;color:var(--taupe);font-size:11px;cursor:pointer;padding:12px 0}
+.break{text-align:center}
+.break h2{max-width:650px;margin:auto}
+.break p{font-size:13px;line-height:2;letter-spacing:.5px;color:var(--muted);max-width:580px;margin:22px auto 30px}
+.formrow{display:grid;gap:24px;margin-top:32px}
+.field label{display:block;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--taupe);margin-bottom:9px}
+.field input{width:100%;border:0;border-bottom:1px solid var(--brown);background:transparent;padding:11px 0;font-size:14px;color:var(--brown);outline:none;letter-spacing:.5px}
+.submit{background:var(--brown);border-color:var(--brown);color:#fff;margin-top:30px}
+.result{text-align:center}
+.score-ring{width:190px;height:190px;border:1px solid var(--taupe);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:30px auto}
+.score{font-family:'Playfair Display',Georgia,serif;font-size:56px;line-height:1}
+.score small{font-size:22px}
+.scorelabel{font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:var(--taupe);margin-top:9px}
+.diagnosis{max-width:620px;margin:0 auto;font-size:13px;line-height:2;letter-spacing:.5px;color:var(--muted)}
+.breakdown{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:34px auto;max-width:700px}
+.metric{border-top:1px solid var(--line);padding-top:12px;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:var(--taupe)}
+.metric strong{display:block;font-family:'Playfair Display',Georgia,serif;font-size:21px;font-weight:400;color:var(--brown);margin-top:6px}
+.offer{margin:48px auto 0;padding-top:38px;border-top:1px solid var(--line);max-width:650px}
+.offer h2{font-size:32px}
+.offer p{font-size:13px;line-height:2;color:var(--muted);margin:18px 0 25px}
+.cta{background:var(--brown);border-color:var(--brown);color:#fff}
+@media(max-width:650px){
+ .screen{padding:70px 22px 45px}
+ h1{font-size:43px}
+ h2{font-size:30px}
+ .breakdown{grid-template-columns:1fr 1fr}
+ .metric:last-child{grid-column:1/-1}
+}
+
+.result-intro{max-width:650px;margin:18px auto 0;font-size:13px;line-height:2;letter-spacing:.5px;color:var(--muted)}
+.insights{max-width:700px;margin:42px auto 0;text-align:left;display:grid;gap:14px}
+.insight{border-top:1px solid var(--line);padding:20px 0 6px;display:grid;grid-template-columns:165px 1fr;gap:24px}
+.insight-name{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:400;color:var(--brown)}
+.insight-status{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--taupe);margin-bottom:8px}
+.insight-copy{font-size:12px;line-height:1.9;letter-spacing:.35px;color:var(--muted)}
+.priority{max-width:700px;margin:38px auto 0;padding:27px 30px;border:1px solid var(--line);text-align:left;background:rgba(255,255,255,.24)}
+.priority-label{font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:var(--taupe);margin-bottom:10px}
+.priority h3{font-family:'Playfair Display',Georgia,serif;font-size:25px;font-weight:400;letter-spacing:.5px;margin:0 0 10px;color:var(--brown)}
+.priority p{font-size:12px;line-height:1.9;color:var(--muted);margin:0}
+@media(max-width:650px){.insight{grid-template-columns:1fr;gap:8px}.priority{padding:23px 20px}}
+
+.profile-diagnosis{max-width:700px;margin:30px auto 0;padding:28px 30px;border-top:1px solid var(--line);border-bottom:none;text-align:left}
+.profile-kicker{font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:var(--taupe);margin-bottom:10px}
+.profile-diagnosis h3{font-family:'Playfair Display',Georgia,serif;font-size:26px;line-height:1.3;font-weight:400;letter-spacing:.5px;margin:0 0 12px;color:var(--brown)}
+.profile-diagnosis p{font-size:12px;line-height:1.95;letter-spacing:.35px;color:var(--muted);margin:0}
+@media(max-width:650px){.profile-diagnosis{padding:24px 0}}
+</style>
+
+<style>
+/* V5 — verfijning uitslagpagina */
+.score-ring{
+  background:#ffffff;
+}
+.priority{
+  background:#ffffff;
+}
+.offer{
+  max-width:700px;
+  margin:48px auto 0;
+  padding:38px 34px;
+  border:1px solid var(--line);
+  background:#ffffff;
+}
+@media(max-width:650px){
+  .offer{padding:30px 22px;}
+}
+</style>
+
+
+<style>
+/* V6 — laatste CTA-vlak over de volledige breedte, zonder rand */
+.result .offer{
+  width:100vw !important;
+  max-width:none !important;
+  margin-left:calc(50% - 50vw) !important;
+  margin-right:calc(50% - 50vw) !important;
+  margin-top:48px !important;
+  padding:54px max(28px, calc((100vw - 700px) / 2)) !important;
+  border:none !important;
+  background:#ffffff !important;
+}
+@media(max-width:650px){
+  .result .offer{
+    padding:42px 22px !important;
+  }
+}
+</style>
+
+
+<style>
+@keyframes scoreCircleIn{
+  0%{opacity:0;transform:scale(.92)}
+  100%{opacity:1;transform:scale(1)}
+}
+.result.active .score-ring{
+  animation:scoreCircleIn .7s ease-out both;
+}
+</style>
+
+
+<style>
+/* V8 — rustigere score-animatie + CTA hover */
+.result .cta{
+  transition:background-color .3s ease,border-color .3s ease,color .3s ease;
+}
+.result .cta:hover{
+  background:#c99e8a !important;
+  border-color:#c99e8a !important;
+  color:#ffffff !important;
+}
+</style>
+
+
+<style>
+/* V9 — laatste CTA-sectie volgens referentie */
+.result .offer{
+  width:100vw !important;
+  max-width:none !important;
+  margin-left:calc(50% - 50vw) !important;
+  margin-right:calc(50% - 50vw) !important;
+  margin-top:58px !important;
+  padding:66px max(28px, calc((100vw - 700px) / 2)) 72px !important;
+  border:none !important;
+  background:#171615 !important;
+  text-align:center !important;
+  color:#ffffff !important;
+}
+.result .offer .eyebrow{
+  margin:0 0 20px !important;
+  color:#9f7867 !important;
+}
+.result .offer h2{
+  max-width:680px;
+  margin:0 auto !important;
+  color:#ffffff !important;
+  font-family:'Playfair Display',Georgia,serif !important;
+  font-size:clamp(28px,3.4vw,40px) !important;
+  font-weight:400 !important;
+  line-height:1.28 !important;
+  letter-spacing:.5px !important;
+}
+.result .offer h2 em{
+  color:#c99e8a;
+  font-weight:400;
+}
+.result .offer p:not(.eyebrow){
+  max-width:620px;
+  margin:25px auto 30px !important;
+  color:#8f8783 !important;
+  font-family:'Montserrat',Arial,sans-serif !important;
+  font-size:12px !important;
+  font-weight:400 !important;
+  line-height:2 !important;
+  letter-spacing:.5px !important;
+}
+.result .offer .cta{
+  background:#c99e8a !important;
+  border-color:#c99e8a !important;
+  color:#171615 !important;
+  padding:17px 27px !important;
+}
+.result .offer .cta:hover{
+  background:#ffffff !important;
+  border-color:#ffffff !important;
+  color:#171615 !important;
+}
+@media(max-width:650px){
+  .result .offer{
+    padding:52px 22px 58px !important;
+  }
+}
+</style>
+
+
+<style>
+/* V10 — compactere, actiegerichte uitslag */
+.actions{max-width:700px;margin:42px auto 0;text-align:left}
+.actions-kicker{font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:var(--taupe);margin-bottom:10px}
+.actions h3{font-family:'Playfair Display',Georgia,serif;font-size:26px;line-height:1.3;font-weight:400;letter-spacing:.5px;margin:0 0 20px;color:var(--brown)}
+.action-list{display:grid;gap:0;counter-reset:action;border-top:1px solid var(--line)}
+.action-item{counter-increment:action;display:grid;grid-template-columns:42px 1fr;gap:16px;padding:19px 0;border-bottom:1px solid var(--line)}
+.action-item:before{content:"0" counter(action);font-family:'Playfair Display',Georgia,serif;font-size:22px;line-height:1.2;color:var(--taupe);padding-top:1px}
+.action-item strong{display:block;font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:400;line-height:1.4;letter-spacing:.5px;color:var(--brown);margin-bottom:6px}
+.action-item p{margin:0;font-family:'Montserrat',Arial,sans-serif;font-size:12px;font-weight:400;line-height:2;letter-spacing:.5px;color:var(--muted)}
+@media(max-width:650px){.actions{margin-top:36px}.action-item{grid-template-columns:34px 1fr;gap:12px}}
+</style>
+
+</head>
+<body>
+<div class="app">
+<div class="progress"><span id="bar"></span></div>
+
+<section class="screen start active" data-kind="start">
+ <div class="inner">
+  <p class="eyebrow">Gratis MKB Merkcheck</p>
+  <h1>Hoe sterk is jouw<br><em>merkidentiteit?</em></h1>
+  <p class="lead">Ontdek in een paar minuten waar je merk sterk staat en waar kansen liggen om professioneler, consistenter en onderscheidender over te komen.</p>
+  <button class="startbtn" onclick="go(1)">Start de merkcheck</button>
+  <div class="time">± 3 minuten</div>
+ </div>
+</section>
+
+<div id="questions"></div>
+
+<section class="screen break" data-kind="lead">
+ <div class="inner">
+  <p class="eyebrow">Je merkcheck is klaar</p>
+  <h2>Waar mag ik jouw persoonlijke merkscore naartoe sturen?</h2>
+  <p>Vul je gegevens in en bekijk direct hoe jouw merkidentiteit scoort.</p>
+  <div class="formrow">
+   <div class="field"><label>Voornaam</label><input id="name" autocomplete="given-name" placeholder="Jouw voornaam"></div>
+   <div class="field"><label>E-mailadres</label><input id="email" type="email" autocomplete="email" placeholder="jij@bedrijf.nl"></div>
+  </div>
+  <button class="submit" onclick="showResult()">Bekijk mijn merkscore</button>
+  <div><button class="back" onclick="prev()">← Vorige</button></div>
+ </div>
+</section>
+
+<section class="screen result" data-kind="result">
+ <div class="inner">
+  <p class="eyebrow">Jouw persoonlijke merkscore</p>
+  <h2 id="resultTitle">Dit is waar jouw merk nu staat.</h2>
+  <div class="score-ring"><div class="score"><span id="score">0</span><small>/100</small></div><div class="scorelabel">Merkscore</div></div>
+  <div class="profile-diagnosis" id="profileDiagnosis"></div>
+  <div class="breakdown" id="breakdown"></div>
+  <div class="priority" id="priority"></div>
+  <div class="actions" id="actions"></div>
+  <div class="offer">
+   <p class="eyebrow">De volgende stap</p>
+   <h2>Wil je precies weten wat jouw merk <em>nodig heeft?</em></h2>
+   <p>Met de Logo Analyse kijk ik persoonlijk naar je logo en visuele identiteit. Je ontvangt een heldere merkdiagnose met concrete verbeterpunten en strategische aanbevelingen.</p>
+   <a class="cta" href="https://jdcreativedesignstudio.plugandpay.nl/logoevaluatieenadvies-jdcreativedesignstudio" target="_self" onclick="window.location.href=this.href; return false;">Ontdek de Logo Analyse →</a>
+  </div>
+ </div>
+</section>
+</div>
+
+<script src="https://forminit.com/sdk/v1/forminit.js"></script>
+<script>
+const FORMINIT_FORM_ID="6z0gcycocio";
+const forminit=new Forminit();
+const data = [
+ {cat:"Logo", q:"Is je logo ook op klein formaat direct herkenbaar en goed leesbaar?"},
+ {cat:"Logo", q:"Past je logo nog bij het niveau waarop je bedrijf vandaag de dag opereert?"},
+ {cat:"Logo", q:"Is je logo onderscheidend genoeg om niet op te gaan tussen concurrenten?"},
+ {cat:"Huisstijl", q:"Gebruik je overal consequent dezelfde kleuren, lettertypes en visuele stijl?"},
+ {cat:"Huisstijl", q:"Zijn je website, social media, offertes en presentaties direct herkenbaar als hetzelfde merk?"},
+ {cat:"Huisstijl", q:"Kun je nieuwe uitingen maken zonder iedere keer opnieuw te bepalen hoe iets eruit moet zien?"},
+ {cat:"Doelgroep", q:"Past je uitstraling bij het type klant dat je het liefst wilt aantrekken?"},
+ {cat:"Doelgroep", q:"Geeft je uitstraling het kwaliteitsniveau weer dat je wilt verkopen?"},
+ {cat:"Consistentie", q:"Ziet je merk er professioneel en consistent uit op ieder contactmoment met een klant?"},
+ {cat:"Consistentie", q:"Zou iemand jouw communicatie herkennen als je logo er niet op zou staan?"},
+ {cat:"Positionering & groei", q:"Is binnen een paar seconden duidelijk wat je bedrijf doet en voor wie?"},
+ {cat:"Positionering & groei", q:"Maakt je uitstraling duidelijk waarom klanten voor jou zouden moeten kiezen?"},
+ {cat:"Positionering & groei", q:"Past je huidige uitstraling bij waar je bedrijf de komende jaren naartoe wil groeien?"}
+];
+const values={Ja:2,"Gedeeltelijk":1,Nee:0}, answers=Array(data.length).fill(null);
+const host=document.getElementById("questions");
+data.forEach((x,i)=>{
+ const s=document.createElement("section"); s.className="screen"; s.dataset.kind="question"; s.dataset.q=i;
+ s.innerHTML=`<div class="inner"><div class="num">${String(i+1).padStart(2,"0")}</div><div class="category">${x.cat}</div><h2>${x.q}</h2><p class="helper">Kies het antwoord dat het beste bij jouw merk past.</p><div class="options">${["Ja","Gedeeltelijk","Nee"].map(a=>`<button class="option" data-a="${a}">${a}</button>`).join("")}</div><div class="nav"><button class="back">← Vorige</button><button class="next" disabled>Volgende</button></div></div>`;
+ host.appendChild(s);
+ s.querySelectorAll(".option").forEach(b=>b.onclick=()=>{answers[i]=values[b.dataset.a];s.querySelectorAll(".option").forEach(z=>z.classList.toggle("selected",z===b));s.querySelector(".next").disabled=false});
+ s.querySelector(".next").onclick=()=>go(current+1); s.querySelector(".back").onclick=prev;
+});
+const screens=[document.querySelector(".start"),...host.children,document.querySelector('[data-kind="lead"]'),document.querySelector('[data-kind="result"]')];
+let current=0;
+function go(n){screens[current].classList.remove("active");current=Math.max(0,Math.min(n,screens.length-1));screens[current].classList.add("active");update();window.scrollTo(0,0)}
+function prev(){go(current-1)}
+function update(){let p= current===0?0:Math.min(100,Math.round(current/(screens.length-2)*100));document.getElementById("bar").style.width=p+"%"}
+async function showResult(){
+ const name=document.getElementById("name").value.trim(), email=document.getElementById("email").value.trim();
+ if(!name || !/^\S+@\S+\.\S+$/.test(email)){alert("Vul je voornaam en een geldig e-mailadres in.");return}
+ const total=answers.reduce((a,b)=>a+(b??0),0), max=data.length*2, pct=Math.round(total/max*100);
+ const scoreEl=document.getElementById("score");
+ scoreEl.textContent="0";
+ const scoreDuration=2500;
+ const scoreStart=performance.now();
+ function animateScore(now){
+   const progress=Math.min((now-scoreStart)/scoreDuration,1);
+   const eased=1-Math.pow(1-progress,3);
+   scoreEl.textContent=Math.round(pct*eased);
+   if(progress<1) requestAnimationFrame(animateScore);
+   else scoreEl.textContent=pct;
+ }
+ requestAnimationFrame(animateScore);
+ const displayName=name.charAt(0).toLocaleUpperCase("nl-NL")+name.slice(1);
+ document.getElementById("resultTitle").textContent=`${displayName}, dit is waar jouw merk nu staat.`;
+ const cats=["Logo","Huisstijl","Doelgroep","Consistentie","Positionering & groei"];
+ const copy={
+ "Logo":["Je antwoorden wijzen erop dat je logo je bedrijf mogelijk niet meer optimaal vertegenwoordigt of onvoldoende onderscheidend werkt.","Je logo doet een deel van zijn werk goed, maar sluit mogelijk nog niet volledig aan bij het niveau en de positionering van je bedrijf.","Je logo lijkt een sterke basis te vormen: herkenbaar, passend bij je huidige niveau en voldoende onderscheidend."],
+ "Huisstijl":["Je visuele stijl mist waarschijnlijk nog een duidelijk systeem, waardoor uitingen sneller verschillend of ad-hoc kunnen aanvoelen.","De basis van je huisstijl staat, maar de toepassing lijkt nog niet overal even consequent of eenvoudig.","Je visuele stijl wordt consequent toegepast. Dat helpt om herkenning en professionaliteit op te bouwen."],
+ "Doelgroep":["Er lijkt ruimte om je visuele uitstraling beter te laten aansluiten op het type klant en kwaliteitsniveau dat je wilt aantrekken.","Je uitstraling sluit deels aan op je gewenste klant, maar kan waarschijnlijk scherper worden afgestemd op hun verwachtingen.","Je uitstraling lijkt goed aan te sluiten op de klanten die je wilt aantrekken en op het kwaliteitsniveau dat je verkoopt."],
+ "Consistentie":["Je merk mist waarschijnlijk nog voldoende visuele herkenning tussen verschillende contactmomenten en kanalen.","Er is herkenning aanwezig, maar niet ieder contactmoment voelt waarschijnlijk al als onderdeel van hetzelfde merk.","Je merk is ook zonder voortdurend gebruik van je logo herkenbaar. Dat is een sterk teken van visuele consistentie."],
+ "Positionering & groei":["Je visuele identiteit ondersteunt je positionering en toekomstige groei op dit moment waarschijnlijk nog onvoldoende.","Je positionering is deels zichtbaar, maar je uitstraling kan nog sterker communiceren wat je onderscheidt en waar je naartoe wilt.","Je uitstraling ondersteunt duidelijk waar je voor staat, waarom klanten voor je kiezen en waar je bedrijf naartoe groeit."]
+ };
+ const scores=cats.map(c=>{const inds=data.map((x,i)=>x.cat===c?i:-1).filter(i=>i>=0),got=inds.reduce((a,i)=>a+(answers[i]??0),0),mx=inds.length*2;return{cat:c,pct:Math.round(got/mx*100)}});
+ const sm=Object.fromEntries(scores.map(s=>[s.cat,s.pct]));
+ const q=(i)=>answers[i]??0;
+ let profile;
+ if(sm["Logo"]<50 && sm["Positionering & groei"]<60 && sm["Consistentie"]>=50){
+   profile=["Je merk is consistent, maar lijkt je bedrijf te zijn ontgroeid.","Je hebt al herkenning opgebouwd, maar je antwoorden laten zien dat vooral je logo en de richting van je uitstraling niet meer volledig aansluiten bij het niveau en de toekomst van je bedrijf. De grootste kans zit daarom waarschijnlijk niet in méér consistentie, maar in het vernieuwen van de visuele basis."];
+ } else if(sm["Consistentie"]<50 && sm["Logo"]>=60){
+   profile=["Je basis staat, maar je merk mist samenhang.","Je logo vormt een redelijke tot sterke basis, maar de toepassing van je merk verschilt nog te veel tussen verschillende contactmomenten. Meer visuele samenhang kan ervoor zorgen dat je bedrijf sneller herkenbaar wordt en professioneler overkomt."];
+ } else if(sm["Doelgroep"]<50){
+   profile=["Je uitstraling en je ideale klant liggen nog niet helemaal op één lijn.","Je antwoorden wijzen erop dat je visuele identiteit nog niet volledig aansluit bij het type klant of kwaliteitsniveau dat je wilt aantrekken. Daardoor kan je merk minder sterk overbrengen voor wie je er bent en wat klanten van je mogen verwachten."];
+ } else if(sm["Huisstijl"]<50){
+   profile=["Je merk heeft behoefte aan een sterker visueel systeem.","De basis kan aanwezig zijn, maar kleuren, typografie en uitingen vormen nog niet vanzelfsprekend één geheel. Een duidelijker huisstijlsysteem maakt het makkelijker om consequent en professioneel te communiceren zonder telkens opnieuw visuele keuzes te maken."];
+ } else if(sm["Positionering & groei"]<50 || q(12)===0){
+   profile=["Je merk vertelt nog niet sterk genoeg waar je naartoe wilt.","Je huidige uitstraling kan prima hebben gewerkt voor een eerdere fase van je bedrijf, maar je antwoorden laten zien dat je visuele identiteit je positionering en toekomstige groei nog onvoldoende ondersteunt. Hier ligt vooral een strategische kans."];
+ } else if(sm["Logo"]<60){
+   profile=["Je merkbasis kan scherper beginnen bij je logo.","Andere onderdelen van je uitstraling kunnen redelijk op orde zijn, maar je logo zelf lijkt nog niet optimaal mee te werken aan herkenning, onderscheid en het niveau dat je wilt uitstralen."];
+ } else if(q(9)===0 || sm["Consistentie"]<70){
+   profile=["Je merk is aanwezig, maar nog niet overal herkenbaar.","Je hebt verschillende goede merkelementen, maar de herkenning lijkt nog sterk afhankelijk van je logo of losse uitingen. De volgende stap is een visuele stijl die ook zonder logo duidelijk als jouw merk voelt."];
+ } else if(sm["Positionering & groei"]<75){
+   profile=["Je merk staat goed, maar kan strategischer voor je werken.","De visuele basis is behoorlijk sterk. De meeste winst zit nu in scherper laten zien waarom klanten voor jou kiezen en je uitstraling bewuster laten aansluiten op de volgende groeifase van je bedrijf."];
+ } else if(Math.min(...scores.map(s=>s.pct))>=75){
+   profile=["Je merk heeft een sterke en volwassen basis.","Je antwoorden laten zien dat logo, huisstijl, doelgroep, consistentie en positionering goed op elkaar aansluiten. De focus ligt nu vooral op het bewaken van die lijn en gericht doorontwikkelen wanneer je bedrijf verandert."];
+ } else {
+   profile=["Je merk heeft een goede basis met gerichte groeikansen.","Er staat al veel goed, maar je antwoorden laten ook zien dat een paar onderdelen nog scherper op elkaar kunnen aansluiten. Juist daar kan relatief kleine verbetering een groot verschil maken in hoe professioneel en herkenbaar je merk wordt ervaren."];
+ }
+ document.getElementById("profileDiagnosis").innerHTML=`<div class="profile-kicker">Jouw merkprofiel</div><h3>${profile[0]}</h3><p>${profile[1]}</p>`;
+ document.getElementById("breakdown").innerHTML=scores.map(s=>`<div class="metric">${s.cat}<strong>${s.pct}%</strong></div>`).join("");
+ const weakest=[...scores].sort((a,b)=>a.pct-b.pct)[0];
+ const pc={
+ "Logo":"Hier lijkt op basis van je antwoorden de meeste winst te liggen. Kijk vooral of je logo nog past bij het niveau waarop je bedrijf nu opereert én voldoende onderscheidend en herkenbaar is.",
+ "Huisstijl":"Hier lijkt op basis van je antwoorden de meeste winst te liggen. Een duidelijk visueel systeem maakt het makkelijker om overal dezelfde professionele uitstraling neer te zetten.",
+ "Doelgroep":"Hier lijkt op basis van je antwoorden de meeste winst te liggen. Je uitstraling moet niet alleen mooi zijn, maar ook passen bij het type klant en kwaliteitsniveau dat je wilt aantrekken.",
+ "Consistentie":"Hier lijkt op basis van je antwoorden de meeste winst te liggen. Sterke merken zijn herkenbaar over alle contactmomenten heen — ook wanneer het logo niet prominent aanwezig is.",
+ "Positionering & groei":"Hier lijkt op basis van je antwoorden de meeste winst te liggen. Je visuele identiteit moet niet alleen passen bij waar je nu staat, maar ook ondersteunen waar je bedrijf naartoe groeit."
+ };
+ document.getElementById("priority").innerHTML=`<div class="priority-label">Jouw belangrijkste aandachtspunt</div><h3>${weakest.cat}</h3><p>${pc[weakest.cat]}</p>`;
+ const actionCopy={
+ "Logo":[
+   ["Maak je logo toekomstbestendig","Beoordeel of je logo op klein formaat helder blijft, voldoende onderscheidend is en nog past bij het niveau waarop je bedrijf nu opereert."],
+   ["Versterk herkenning in je logo","Kijk waar je logo eenvoudiger, herkenbaarder of beter passend bij je positionering kan worden zonder direct alles opnieuw te ontwerpen."],
+   ["Bewaak de kracht van je logo","Je logo vormt een sterke basis. Zorg dat formaat, ruimte en toepassing overal consequent blijven."]
+ ],
+ "Huisstijl":[
+   ["Breng structuur in je huisstijl","Leg kleuren, typografie en vaste ontwerpregels duidelijk vast, zodat nieuwe uitingen niet iedere keer opnieuw hoeven te worden bedacht."],
+   ["Maak je visuele systeem consistenter","Controleer of website, social media, offertes en presentaties zichtbaar uit dezelfde merkwereld komen."],
+   ["Werk vanuit vaste merkregels","Je huisstijl staat sterk. Bewaak de bestaande lijn en voorkom dat nieuwe uitingen langzaam van je merk af gaan wijken."]
+ ],
+ "Doelgroep":[
+   ["Stem je uitstraling af op je ideale klant","Bekijk je merk door de ogen van de klant die je het liefst wilt aantrekken: voelt de uitstraling passend bij hun verwachtingen én het kwaliteitsniveau dat je verkoopt?"],
+   ["Maak de aansluiting met je doelgroep scherper","Verfijn vooral de visuele keuzes die bepalen welk kwaliteitsniveau en type bedrijf je merk uitstraalt."],
+   ["Blijf ontwerpen voor je ideale klant","Je uitstraling sluit goed aan. Toets nieuwe keuzes steeds aan het type klant dat je wilt blijven aantrekken."]
+ ],
+ "Consistentie":[
+   ["Maak je merk herkenbaar zonder logo","Gebruik kleuren, typografie, fotografie en lay-out zo consequent dat een uiting ook zonder logo direct als jouw merk voelt."],
+   ["Versterk de rode draad tussen contactmomenten","Leg website, socials, offertes en presentaties naast elkaar en maak verschillen in stijl, beeld en opmaak kleiner."],
+   ["Bewaak herkenning op ieder contactmoment","Je consistentie is sterk. Zorg dat nieuwe kanalen en materialen dezelfde visuele merkregels blijven volgen."]
+ ],
+ "Positionering & groei":[
+   ["Laat je uitstraling meegroeien met je bedrijf","Maak zichtbaar waar je bedrijf naartoe wil. Je merk moet niet alleen bij vandaag passen, maar ook bij het niveau dat je de komende jaren wilt bereiken."],
+   ["Maak je positionering zichtbaarder","Zorg dat bezoekers sneller begrijpen voor wie je er bent, welk niveau je biedt en waarom jouw bedrijf anders is dan alternatieven."],
+   ["Blijf je merk koppelen aan je groeirichting","Je positionering staat sterk. Toets je visuele identiteit opnieuw wanneer aanbod, doelgroep of ambitieniveau verandert."]
+ ]
+ };
+ /* V12 — slimmere rangschikking bij gelijke categoriescores.
+    Eerst: laagste categoriescore.
+    Bij gelijkstand: meeste 'Nee'-antwoorden, daarna meeste 'Gedeeltelijk',
+    daarna de laagste ruwe antwoordscore binnen de categorie.
+    Zo worden de 3 acties beter afgestemd op de daadwerkelijke antwoordmix. */
+ const ranked=[...scores].map(s=>{
+   const inds=data.map((x,i)=>x.cat===s.cat?i:-1).filter(i=>i>=0);
+   const vals=inds.map(i=>answers[i]??0);
+   return {
+     ...s,
+     noCount:vals.filter(v=>v===0).length,
+     partialCount:vals.filter(v=>v===1).length,
+     minAnswer:Math.min(...vals),
+     answerTotal:vals.reduce((a,b)=>a+b,0)
+   };
+ }).sort((a,b)=>
+   a.pct-b.pct ||
+   b.noCount-a.noCount ||
+   b.partialCount-a.partialCount ||
+   a.minAnswer-b.minAnswer ||
+   a.answerTotal-b.answerTotal
+ );
+ const actionScores=ranked.slice(0,3);
+ const actionHtml=actionScores.map(s=>{
+   const level=s.pct>=75?2:s.pct>=50?1:0;
+   const a=actionCopy[s.cat][level];
+   return `<div class="action-item"><div><strong>${a[0]}</strong><p>${a[1]}</p></div></div>`;
+ }).join("");
+ document.getElementById("actions").innerHTML=`<div class="actions-kicker">Jouw volgende stappen</div><h3>Dit kun je nu verbeteren</h3><div class="action-list">${actionHtml}</div>`;
+
+ // Verstuur lead + volledige merkcheck naar Forminit.
+ const submitBtn=document.querySelector(".submit");
+ const originalBtnText=submitBtn.textContent;
+ submitBtn.disabled=true;
+ submitBtn.textContent="Even verwerken…";
+ try{
+   const blocks=[
+     {type:"sender",properties:{firstName:name,email:email}},
+     {type:"text",name:"merkscore",value:String(pct)},
+     {type:"text",name:"merkprofiel",value:profile[0]},
+     {type:"text",name:"merkprofiel_uitleg",value:profile[1]},
+     {type:"text",name:"belangrijkste_aandachtspunt",value:weakest.cat},
+     {type:"text",name:"deelscores",value:scores.map(s=>`${s.cat}: ${s.pct}%`).join(" | ")},
+     {type:"text",name:"vervolgstappen",value:actionScores.map(s=>{const level=s.pct>=75?2:s.pct>=50?1:0;const a=actionCopy[s.cat][level];return `${s.cat}: ${a[0]} — ${a[1]}`}).join(" | ")}
+   ];
+   data.forEach((item,i)=>{
+     const label=answers[i]===2?"Ja":answers[i]===1?"Gedeeltelijk":"Nee";
+     blocks.push({type:"text",name:`vraag_${String(i+1).padStart(2,"0")}`,value:`${item.q} — ${label}`});
+   });
+   const {error}=await forminit.submit(FORMINIT_FORM_ID,{blocks});
+   if(error) throw new Error(error.message || "Formulier kon niet worden verzonden.");
+   go(screens.length-1);
+ }catch(err){
+   console.error("Forminit:",err);
+   alert("Het versturen lukt op dit moment niet. Controleer je verbinding en probeer het opnieuw.");
+ }finally{
+   submitBtn.disabled=false;
+   submitBtn.textContent=originalBtnText;
+ }
+}
+update();
+</script>
+</body>
+</html>
